@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baxtiyar Auezov — Frontend Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #010409;
+      --bg2:      #0d1117;
+      --bg3:      #161b22;
+      --border:   #21262d;
+      --border2:  #30363d;
+      --text:     #e6edf3;
+      --muted:    #8b949e;
+      --blue:     #1f8bff;
+      --blue-dim: #1f6bc4;
+      --purple:   #a371f7;
+      --green:    #3fb950;
+      --amber:    #e3b341;
+      --red:      #f85149;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--blue);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 32px; height: 32px;
+      border: 1px solid var(--blue);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.4;
+      transition: transform 0.15s, width 0.2s, height 0.2s, opacity 0.2s;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    /* Grid bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(31,139,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31,139,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 64px;
+      background: rgba(1,4,9,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo span {
+      color: var(--blue);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      font-size: 12px;
+      padding: 7px 16px;
+      background: transparent;
+      border: 0.5px solid var(--blue);
+      color: var(--blue);
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta:hover { background: var(--blue); color: #fff; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 100px 5% 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-inner {
+      max-width: 800px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--green);
+      border: 0.5px solid #3fb95033;
+      background: #3fb95010;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .dot-pulse {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 7vw, 80px);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.35s;
+    }
+
+    .hero-name .accent { color: var(--blue); }
+
+    .hero-title {
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--muted);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.5s;
+    }
+
+    .hero-title .hl { color: var(--purple); }
+
+    .type-line {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.65s;
+      min-height: 20px;
+    }
+
+    .type-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 14px;
+      background: var(--blue);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.8s;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: transparent;
+      color: var(--text);
+      border: 0.5px solid var(--border2);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--muted); background: var(--bg3); transform: translateY(-1px); }
+
+    /* Floating code snippet */
+    .hero-code {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-size: 12px;
+      line-height: 1.8;
+      width: 300px;
+      opacity: 0;
+      animation: fadeLeft 0.8s ease forwards 0.9s;
+      display: none;
+    }
+
+    @media (min-width: 1100px) { .hero-code { display: block; } }
+
+    .code-header {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #f85149; }
+    .dot-y { background: #e3b341; }
+    .dot-g { background: #3fb950; }
+
+    .c-comment { color: #6e7681; }
+    .c-key { color: #79c0ff; }
+    .c-str { color: #a8d8a0; }
+    .c-fn { color: #d2a8ff; }
+    .c-num { color: #e3b341; }
+    .c-op { color: #8b949e; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translate(20px, -50%); }
+      to   { opacity: 1; transform: translate(0, -50%); }
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 5%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      font-size: 11px;
+      color: var(--blue);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 48px;
+      max-width: 500px;
+      line-height: 1.7;
+    }
+
+    .divider-line {
+      width: 100%;
+      height: 0.5px;
+      background: var(--border);
+      margin: 0 0 80px;
+    }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .skill-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .skill-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .skill-cat-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .skill-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skill-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 0.5px solid var(--border);
+      color: var(--muted);
+      background: var(--bg3);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .skill-tag:hover {
+      color: var(--text);
+      border-color: var(--border2);
+    }
+
+    /* Progress bars */
+    .skill-bar-list { display: flex; flex-direction: column; gap: 14px; margin-top: 40px; }
+
+    .skill-bar-item {}
+
+    .skill-bar-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .skill-bar-track {
+      height: 4px;
+      background: var(--bg3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-3px);
+    }
+
+    .project-preview {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, var(--bg2));
+    }
+
+    .project-body {
+      padding: 18px 20px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .project-tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .project-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 10px;
+    }
+
+    .proj-link {
+      font-size: 11px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: opacity 0.2s;
+    }
+    .proj-link:hover { opacity: 0.7; }
+
+    .proj-link-gh {
+      background: var(--bg3);
+      border: 0.5px solid var(--border2);
+      color: var(--text);
+    }
+
+    .proj-link-live {
+      background: #1f8bff18;
+      border: 0.5px solid #1f8bff44;
+      color: var(--blue);
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .hero-name { font-size: 36px; }
+      nav .nav-links { display: none; }
+    }
+
+    .about-text p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 16px;
+    }
+
+    .about-text p strong { color: var(--text); font-weight: 500; }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* CONTACT */
+    .contact-inner {
+      max-width: 600px;
+    }
+
+    .contact-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .contact-link:hover {
+      border-color: var(--border2);
+      transform: translateX(4px);
+    }
+
+    .contact-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .contact-info-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; display: block; margin-bottom: 2px; }
+    .contact-info-val   { font-size: 12px; color: var(--text); font-weight: 500; display: block; }
+
+    /* FOOTER */
+    footer {
+      border-top: 0.5px solid var(--border);
+      padding: 24px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    footer a { color: var(--blue); text-decoration: none; }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Accent glow */
+    .glow-dot {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">
+      <span>&lt;</span>BA<span>/&gt;</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">about</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+    <a href="https://github.com/Baxtiyar01" target="_blank" class="nav-cta">GitHub ↗</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="glow-dot" style="width:400px;height:400px;background:#1f8bff;opacity:0.04;top:-100px;left:-100px;"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <div class="dot-pulse"></div>
+        Open to opportunities
+      </div>
+      <h1 class="hero-name">
+        BAXTIYAR<br><span class="accent">AUEZOV</span>
+      </h1>
+      <p class="hero-title">
+        Frontend Developer &amp; <span class="hl">Vibe Coder</span>
+      </p>
+      <p class="type-line" id="typeLine"><span class="type-cursor"></span></p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          View Projects
+        </a>
+        <a href="#contact" class="btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <!-- Floating code snippet -->
+    <div class="hero-code">
+      <div class="code-header">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div>
+        <span class="c-comment">// baxtiyar.js</span>
+      </div>
+      <div><span class="c-fn">const</span> <span class="c-key">dev</span> <span class="c-op">=</span> {</div>
+      <div>&nbsp;&nbsp;<span class="c-key">name</span>: <span class="c-str">"Baxtiyar Auezov"</span>,</div>
+      <div>&nbsp;&nbsp;<span class="c-key">role</span>: <span class="c-str">"Frontend Dev"</span>,</div>
+      <div>&nbsp;&nbsp;<span class="c-key">stack</span>: [<span class="c-str">"HTML"</span>, <span class="c-str">"CSS"</span>, <span class="c-str">"JS"</span>],</div>
+      <div>&nbsp;&nbsp;<span class="c-key">vibe</span>: <span class="c-str">"coding 🚀"</span>,</div>
+      <div>&nbsp;&nbsp;<span class="c-key">available</span>: <span class="c-num">true</span></div>
+      <div>}</div>
+      <div style="margin-top:10px;"><span class="c-fn">export</span> <span class="c-key">default</span> dev<span style="animation:blink 1s step-end infinite;display:inline-block;width:2px;height:12px;background:#1f8bff;margin-left:2px;vertical-align:middle;"></span></div>
+    </div>
+  </section>
+
+  <div class="divider-line"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="reveal">
+      <div class="section-label">// 01. about_me</div>
+      <h2 class="section-title">Who I Am</h2>
+    </div>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p>Salom! Men <strong>Baxtiyar Auezov</strong> — Toshkentdan Frontend Developer. Hozirda <strong>Dasturiy Injiniring</strong> yo'nalishida ta'lim olmoqdaman.</p>
+        <p>Men <strong>vibe coding</strong> uslubida ishlashni yaxshi ko'raman — ya'ni faqat mantiq bilan emas, balki his-tuyg'u va estetika bilan ham kod yozaman. Har bir loyiha uchun noyob tajriba yaratishga harakat qilaman.</p>
+        <p>Frontend texnologiyalari — <strong>HTML, CSS, JavaScript</strong> — mening asosiy qurollarim. Saytlarni nafaqat ishlaydigan, balki <strong>his etilishi yoqimli</strong> qilib yasashni maqsad qilaman.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-num">1+</div>
+          <div class="stat-label">Yil tajriba</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Loyihalar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Asosiy texnologiya</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Vibe coding</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-line"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="reveal">
+      <div class="section-label">// 02. skills</div>
+      <h2 class="section-title">Tech Stack</h2>
+      <p class="section-sub">Hozirda o'rganayotgan va foydalanadigan texnologiyalar.</p>
+    </div>
+
+    <div class="skills-grid reveal">
+      <div class="skill-card">
+        <div class="skill-card-header">
+          <div class="skill-icon" style="background:#1f8bff18;border:0.5px solid #1f8bff33;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#79c0ff"><path d="M12 18.08c-6.63 0-12-2.72-12-6.08s5.37-6.08 12-6.08S24 8.64 24 12s-5.37 6.08-12 6.08zm-.87-8.73v1.39H8.71v5.67H7.2v-5.67H4.78v-1.39h6.35zm5.86 7.06l-1.5-4.11h-.04l-1.49 4.11h-1.5l-2.25-7.06h1.6l1.42 4.32h.04l1.47-4.32h1.43l1.49 4.32h.04l1.4-4.32h1.56l-2.22 7.06h-1.45z"/></svg>
+          </div>
+          <span class="skill-cat-name">Markup & Style</span>
+        </div>
+        <div class="skill-items">
+          <span class="skill-tag">HTML5</span>
+          <span class="skill-tag">CSS3</span>
+          <span class="skill-tag">Flexbox</span>
+          <span class="skill-tag">Grid</span>
+          <span class="skill-tag">Animations</span>
+          <span class="skill-tag">Responsive</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-card-header">
+          <div class="skill-icon" style="background:#e3b34118;border:0.5px solid #e3b34133;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#e3b341"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg>
+          </div>
+          <span class="skill-cat-name">JavaScript</span>
+        </div>
+        <div class="skill-items">
+          <span class="skill-tag">ES6+</span>
+          <span class="skill-tag">DOM API</span>
+          <span class="skill-tag">Fetch API</span>
+          <span class="skill-tag">Async/Await</span>
+          <span class="skill-tag">JSON</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-card-header">
+          <div class="skill-icon" style="background:#3fb95018;border:0.5px solid #3fb95033;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#3fb950"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          </div>
+          <span class="skill-cat-name">Tools & Workflow</span>
+        </div>
+        <div class="skill-items">
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">GitHub</span>
+          <span class="skill-tag">VS Code</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">npm</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-card-header">
+          <div class="skill-icon" style="background:#a371f718;border:0.5px solid #a371f733;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#d2a8ff"><path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38a2.167 2.167 0 0 0-1.096-.278zm-.005 1.09c.345 0 .596.09.713.168 1.353.78 1.456 4.812.006 9.172-.48-.119-.98-.224-1.5-.314a20.825 20.825 0 0 0-.911-2.216c.395-.721.747-1.45 1.05-2.17.3-.724.551-1.44.744-2.127.47-1.73.558-3.016.238-3.547a.79.79 0 0 0-.34-.166zM9.766 11.2c.32.085.65.163.985.234.083.38.175.763.276 1.148a20.783 20.783 0 0 0-.82-.087 22.88 22.88 0 0 0-.441 1.862zm2.24-5.42c.312.02.618.048.92.085-.1.397-.213.8-.342 1.208-.136-.348-.278-.69-.43-1.02a15.84 15.84 0 0 0-.148-.273zm-.01 11.69c.152-.217.311-.44.474-.665.154.33.298.666.432 1.003a15.5 15.5 0 0 0-.906-.338zm-4.496-7.14c-.144.452-.268.9-.374 1.346a15.53 15.53 0 0 0-.895.335c.15-.336.31-.673.477-1.008.268.338.524.675.792 1.003zm7.96-.11c.268-.328.525-.664.793-1.003.168.335.328.672.477 1.008a15.53 15.53 0 0 0-.895-.335 15.53 15.53 0 0 0-.375-1.344z"/></svg>
+          </div>
+          <span class="skill-cat-name">Learning Now</span>
+        </div>
+        <div class="skill-items">
+          <span class="skill-tag">React.js</span>
+          <span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">Tailwind CSS</span>
+          <span class="skill-tag">Next.js</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill bars -->
+    <div class="skill-bar-list reveal" id="skillBars">
+      <div class="skill-bar-item">
+        <div class="skill-bar-meta"><span>HTML / CSS</span><span>85%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="85" style="background:var(--blue);"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-meta"><span>JavaScript</span><span>65%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="65" style="background:var(--amber);"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-meta"><span>UI / UX Design</span><span>70%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="70" style="background:var(--purple);"></div></div>
+      </div>
+      <div class="skill-bar-item">
+        <div class="skill-bar-meta"><span>Git & GitHub</span><span>60%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="60" style="background:var(--green);"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-line"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="reveal">
+      <div class="section-label">// 03. projects</div>
+      <h2 class="section-title">My Work</h2>
+      <p class="section-sub">Hozirga qadar yaratgan loyihalarim. GitHub'da ko'proq bor.</p>
+    </div>
+
+    <div class="projects-grid reveal">
+
+      <div class="project-card">
+        <div class="project-preview" style="background:linear-gradient(135deg,#0d1117,#1f8bff11);">
+          <span style="font-size:48px;z-index:1;">🪪</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag" style="background:#1f8bff18;color:#79c0ff;border:0.5px solid #1f8bff33;">HTML</span>
+            <span class="project-tag" style="background:#a371f718;color:#d2a8ff;border:0.5px solid #a371f733;">CSS</span>
+          </div>
+          <div class="project-title">Developer Vizitka</div>
+          <div class="project-desc">Dark GitHub uslubidagi shaxsiy developer vizitka. Barcha social linklar va animatsiyalar bilan.</div>
+          <div class="project-links">
+            <a href="https://github.com/Baxtiyar01" target="_blank" class="proj-link proj-link-gh">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.32 6.84 9.67.5.09.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.45-1.17-1.1-1.48-1.1-1.48-.9-.63.07-.62.07-.62 1 .07 1.52 1.05 1.52 1.05.89 1.56 2.33 1.11 2.9.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.38 9.38 0 0112 6.84c.85 0 1.7.12 2.5.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9v2.81c0 .27.18.59.69.49A10.19 10.19 0 0022 12.19C22 6.58 17.52 2 12 2z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-preview" style="background:linear-gradient(135deg,#0d1117,#a371f711);">
+          <span style="font-size:48px;z-index:1;">🌐</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag" style="background:#1f8bff18;color:#79c0ff;border:0.5px solid #1f8bff33;">HTML</span>
+            <span class="project-tag" style="background:#a371f718;color:#d2a8ff;border:0.5px solid #a371f733;">CSS</span>
+            <span class="project-tag" style="background:#e3b34118;color:#e3b341;border:0.5px solid #e3b34133;">JS</span>
+          </div>
+          <div class="project-title">Portfolio Website</div>
+          <div class="project-desc">Shaxsiy portfolio sayt — siz hozir ko'rayotgan sayt. Dark animated dizayn, scroll effektlar bilan.</div>
+          <div class="project-links">
+            <a href="https://github.com/Baxtiyar01" target="_blank" class="proj-link proj-link-gh">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.32 6.84 9.67.5.09.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.45-1.17-1.1-1.48-1.1-1.48-.9-.63.07-.62.07-.62 1 .07 1.52 1.05 1.52 1.05.89 1.56 2.33 1.11 2.9.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.38 9.38 0 0112 6.84c.85 0 1.7.12 2.5.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9v2.81c0 .27.18.59.69.49A10.19 10.19 0 0022 12.19C22 6.58 17.52 2 12 2z"/></svg>
+              GitHub
+            </a>
+            <a href="#" class="proj-link proj-link-live">
+              ↗ Live
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" style="border-style:dashed;opacity:0.5;">
+        <div class="project-preview" style="background:var(--bg2);">
+          <span style="font-size:48px;z-index:1;">🚧</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag" style="background:#3fb95018;color:#7ee787;border:0.5px solid #3fb95033;">Coming soon</span>
+          </div>
+          <div class="project-title">Next Project</div>
+          <div class="project-desc">Yangi loyiha ustida ishlamoqdaman. Tez orada GitHub'da paydo bo'ladi...</div>
+          <div class="project-links">
+            <a href="https://github.com/Baxtiyar01" target="_blank" class="proj-link proj-link-gh">GitHub'da kuzating</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider-line"></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner reveal">
+      <div class="section-label">// 04. contact</div>
+      <h2 class="section-title">Get In Touch</h2>
+      <p class="section-sub">Hamkorlik, loyiha yoki shunchaki salom demoqchi bo'lsangiz — yozing!</p>
+    </div>
+
+    <div class="contact-links reveal">
+
+      <a class="contact-link" href="https://t.me/BXTR_BAXTIYAR" target="_blank">
+        <div class="contact-icon" style="background:#1f8bff18;border:0.5px solid #1f8bff33;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#79c0ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.13.58-.47.72-.95.45l-2.6-1.92-1.26 1.21c-.14.14-.26.26-.52.26l.19-2.66 4.83-4.36c.21-.19-.05-.29-.32-.1L7.9 14.63l-2.52-.79c-.55-.17-.56-.55.12-.82l9.85-3.8c.46-.16.86.11.29.58z"/></svg>
+        </div>
+        <div>
+          <span class="contact-info-label">telegram</span>
+          <span class="contact-info-val">@BXTR_BAXTIYAR</span>
+        </div>
+      </a>
+
+      <a class="contact-link" href="mailto:baxtiyar5avgus@gmail.com">
+        <div class="contact-icon" style="background:#ea433518;border:0.5px solid #ea433533;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#f28b82"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </div>
+        <div>
+          <span class="contact-info-label">gmail</span>
+          <span class="contact-info-val">baxtiyar5avgus@gmail.com</span>
+        </div>
+      </a>
+
+      <a class="contact-link" href="https://github.com/Baxtiyar01" target="_blank">
+        <div class="contact-icon" style="background:#21262d;border:0.5px solid #30363d;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#c9d1d9"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.32 6.84 9.67.5.09.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.45-1.17-1.1-1.48-1.1-1.48-.9-.63.07-.62.07-.62 1 .07 1.52 1.05 1.52 1.05.89 1.56 2.33 1.11 2.9.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.38 9.38 0 0112 6.84c.85 0 1.7.12 2.5.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9v2.81c0 .27.18.59.69.49A10.19 10.19 0 0022 12.19C22 6.58 17.52 2 12 2z"/></svg>
+        </div>
+        <div>
+          <span class="contact-info-label">github</span>
+          <span class="contact-info-val">Baxtiyar01</span>
+        </div>
+      </a>
+
+      <a class="contact-link" href="https://instagram.com/Auezov._.B" target="_blank">
+        <div class="contact-icon" style="background:#a371f718;border:0.5px solid #a371f733;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#d2a8ff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </div>
+        <div>
+          <span class="contact-info-label">instagram</span>
+          <span class="contact-info-val">Auezov._.B</span>
+        </div>
+      </a>
+
+      <a class="contact-link" href="https://wa.me/998907063406" target="_blank">
+        <div class="contact-icon" style="background:#3fb95018;border:0.5px solid #3fb95033;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#7ee787"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </div>
+        <div>
+          <span class="contact-info-label">whatsapp</span>
+          <span class="contact-info-val">+998 90 706 34 06</span>
+        </div>
+      </a>
+
+      <a class="contact-link" href="tel:+998907063406">
+        <div class="contact-icon" style="background:#e3b34118;border:0.5px solid #e3b34133;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#e3b341"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </div>
+        <div>
+          <span class="contact-info-label">phone</span>
+          <span class="contact-info-val">+998 90 706 34 06</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 <a href="#">Baxtiyar Auezov</a></span>
+    <span>Built with <span style="color:var(--red);">♥</span> & vibe coding</span>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 5 + 'px';
+      cursor.style.top  = my - 5 + 'px';
+    });
+
+    (function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx - 16 + 'px';
+      ring.style.top  = ry - 16 + 'px';
+      requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        ring.style.width  = '48px';
+        ring.style.height = '48px';
+        ring.style.opacity = '0.7';
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.style.width  = '32px';
+        ring.style.height = '32px';
+        ring.style.opacity = '0.4';
+      });
+    });
+
+    // Typewriter
+    const lines = [
+      "Building web experiences with HTML, CSS & JS",
+      "Vibe coding every single day 🚀",
+      "Turning ideas into pixel-perfect interfaces",
+      "Frontend dev from Tashkent, Uzbekistan 🇺🇿"
+    ];
+    let li = 0, ci = 0, del = false;
+    const el = document.getElementById('typeLine');
+
+    function type() {
+      const line = lines[li];
+      if (!del) {
+        ci++;
+        el.innerHTML = line.slice(0, ci) + '<span class="type-cursor"></span>';
+        if (ci === line.length) { del = true; setTimeout(type, 2000); return; }
+        setTimeout(type, 55);
+      } else {
+        ci--;
+        el.innerHTML = line.slice(0, ci) + '<span class="type-cursor"></span>';
+        if (ci === 0) { del = false; li = (li + 1) % lines.length; setTimeout(type, 400); return; }
+        setTimeout(type, 28);
+      }
+    }
+    setTimeout(type, 1200);
+
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => obs.observe(el));
+
+    // Skill bars animation
+    const barObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.w + '%';
+          });
+          barObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    const skillSection = document.getElementById('skillBars');
+    if (skillSection) barObs.observe(skillSection);
+  </script>
+</body>
+</html>
